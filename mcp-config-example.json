@@ -1,0 +1,23 @@
+// NOTA: Este archivo es solo de referencia
+// El flag --mcp-config tiene un bug conocido en Claude Code v1.0.73
+// Use en su lugar: claude mcp add cybermax-hello http://192.168.0.89:3001/mcp --scope user -t http
+//
+// Este archivo muestra cómo sería la configuración si --mcp-config funcionara correctamente:
+
+{
+  "mcpServers": {
+    "cybermax-hello": {
+      "_comment": "Servidor HTTP remoto - requiere -t http en comando mcp add",
+      "type": "http",
+      "url": "http://192.168.0.89:3001/mcp"
+    },
+    "cybermax-hello-local": {
+      "_comment": "Servidor stdio local - ejecuta el binario directamente",
+      "command": "W:\\MCPServer\\CyberMaxHelloMCP.exe",
+      "args": [],
+      "env": {
+        "PORT": "3001"
+      }
+    }
+  }
+}

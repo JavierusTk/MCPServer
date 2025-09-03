@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "cybermax-hello": {
+      "command": "W:\\MCPServer\\CyberMaxHelloMCP.exe",
+      "args": [],
+      "env": {
+        "CYBERMAX_PATH": "W:\\",
+        "PORT": "3000"
+      },
+      "description": "CyberMAX ERP MCP Server - Hello World with 3 test tools",
+      "alwaysAllow": [
+        "hello_cybermax",
+        "cyber_echo", 
+        "cyber_time"
+      ]
+    }
+  }
+}

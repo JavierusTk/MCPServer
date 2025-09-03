@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cybermax-hello": {
+      "type": "http-stream",
+      "url": "http://192.168.0.89:3001/mcp"
+    }
+  }
+}

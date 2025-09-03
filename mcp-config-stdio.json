@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "cybermax-hello-local": {
+      "command": "cmd.exe",
+      "args": ["/c", "W:\\MCPServer\\CyberMaxHelloMCP.exe"],
+      "env": {
+        "CYBERMAX_PATH": "W:\\",
+        "PORT": "3001"
+      },
+      "description": "CyberMAX ERP MCP Server - Local execution as stdio"
+    }
+  }
+}

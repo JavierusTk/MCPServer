@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "cybermax": {
+      "command": "W:\\MCPServer\\CyberMaxHelloMCP.exe",
+      "args": [],
+      "env": {
+        "CYBERMAX_PATH": "W:\\"
+      },
+      "description": "CyberMAX ERP MCP Server - Provides tools to explore and document CyberMAX modules",
+      "alwaysAllow": [
+        "hello_cybermax",
+        "cyber_echo", 
+        "cyber_time"
+      ]
+    }
+  }
+}
