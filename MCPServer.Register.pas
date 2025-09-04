@@ -1,39 +1,36 @@
-unit MCPServer.Register.VCL;
+﻿unit MCPServer.Register;
 
 interface
-
-uses
-  System.Classes,
-  MCPServer.VCL.Adapter;
 
 procedure Register;
 
 implementation
 
 uses
+  System.Classes,
   System.SysUtils,
   System.TypInfo,
   DesignIntf,
   DesignEditors,
-  Vcl.Dialogs;
+  MCPServer.Adapter;
 
 type
   // Property editor for server status (read-only)
-  TServerStatusPropertyVCL = class(TStringProperty)
+  TServerStatusProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
   end;
 
   // Property editor for Port with validation
-  TPortPropertyVCL = class(TIntegerProperty)
+  TPortProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure SetValue(const Value: string); override;
   end;
 
   // Component editor for quick actions
-  TMCPEngineVCLComponentEditor = class(TComponentEditor)
+  TMCPEngineComponentEditor = class(TComponentEditor)
   protected
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -46,43 +43,43 @@ type
 
 procedure Register;
 begin
-  // Register the VCL component in the 'MCP Server' palette
-  RegisterComponents('MCP Server', [TMCPEngineVCL]);
-  
+  // Register the component in the 'MCP Server' palette
+  RegisterComponents('MCP Server', [TMCPEngineServer]);
+
   // Register component editor for context menu actions
-  RegisterComponentEditor(TMCPEngineVCL, TMCPEngineVCLComponentEditor);
-  
+  RegisterComponentEditor(TMCPEngineServer, TMCPEngineComponentEditor);
+
   // Register property editors
-  RegisterPropertyEditor(TypeInfo(Boolean), TMCPEngineVCL, 'Active', TServerStatusPropertyVCL);
-  RegisterPropertyEditor(TypeInfo(Word), TMCPEngineVCL, 'Port', TPortPropertyVCL);
+  RegisterPropertyEditor(TypeInfo(Boolean), TMCPEngineServer, 'Active', TServerStatusProperty);
+  RegisterPropertyEditor(TypeInfo(Word), TMCPEngineServer, 'Port', TPortProperty);
 end;
 
-{ TServerStatusPropertyVCL }
+{ TServerStatusProperty }
 
-function TServerStatusPropertyVCL.GetAttributes: TPropertyAttributes;
+function TServerStatusProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paReadOnly, paDisplayReadOnly];
 end;
 
-function TServerStatusPropertyVCL.GetValue: string;
+function TServerStatusProperty.GetValue: string;
 var
-  Component: TMCPEngineVCL;
+  Component: TMCPEngineServer;
 begin
-  Component := GetComponent(0) as TMCPEngineVCL;
+  Component := GetComponent(0) as TMCPEngineServer;
   if Component.Active then
     Result := 'Running'
   else
     Result := 'Stopped';
 end;
 
-{ TPortPropertyVCL }
+{ TPortProperty }
 
-function TPortPropertyVCL.GetAttributes: TPropertyAttributes;
+function TPortProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes;
 end;
 
-procedure TPortPropertyVCL.SetValue(const Value: string);
+procedure TPortProperty.SetValue(const Value: string);
 var
   PortNum: Integer;
 begin
@@ -92,14 +89,14 @@ begin
   inherited SetValue(Value);
 end;
 
-{ TMCPEngineVCLComponentEditor }
+{ TMCPEngineComponentEditor }
 
-function TMCPEngineVCLComponentEditor.GetVerbCount: Integer;
+function TMCPEngineComponentEditor.GetVerbCount: Integer;
 begin
   Result := 5;
 end;
 
-function TMCPEngineVCLComponentEditor.GetVerb(Index: Integer): string;
+function TMCPEngineComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0: Result := 'Start MCP Server';
@@ -112,15 +109,20 @@ begin
   end;
 end;
 
-procedure TMCPEngineVCLComponentEditor.ExecuteVerb(Index: Integer);
+procedure ShowMessage(const Msg:string);
+begin
+  //Nothing
+end;
+
+procedure TMCPEngineComponentEditor.ExecuteVerb(Index: Integer);
 var
-  MCPEngine: TMCPEngineVCL;
+  MCPEngine: TMCPEngineServer;
   Tools: TArray<string>;
   ToolList: string;
   i: Integer;
 begin
-  MCPEngine := Component as TMCPEngineVCL;
-  
+  MCPEngine := Component as TMCPEngineServer;
+
   case Index of
     0: // Start server
       begin
@@ -171,12 +173,13 @@ begin
       
     4: // About
       begin
-        ShowMessage('MCP Server VCL Component'#13#10 +
+        ShowMessage('MCP Server Component'#13#10 +
                     'Version: 1.0.0'#13#10#13#10 +
                     'Model Context Protocol Server for Delphi'#13#10 +
-                    'Enables AI integration via Claude Code'#13#10#13#10 +
+                    'Cross-Platform AI Integration via Claude Code'#13#10#13#10 +
                     'Server Name: ' + MCPEngine.ServerName + #13#10 +
-                    'Server Version: ' + MCPEngine.ServerVersion);
+                    'Server Version: ' + MCPEngine.ServerVersion + #13#10#13#10 +
+                    'Platforms: Windows, macOS, Linux, Android, iOS');
       end;
   end;
   
@@ -184,7 +187,7 @@ begin
     Designer.Modified;
 end;
 
-procedure TMCPEngineVCLComponentEditor.Edit;
+procedure TMCPEngineComponentEditor.Edit;
 begin
   ExecuteVerb(3); // Show tools by default on double-click
 end;

@@ -52,7 +52,8 @@ contains
   MCPServer.ToolsManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas',
   MCPServer.ResourcesManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ResourcesManager.pas',
   MCPServer.Resource.Server in 'W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Server.pas',
-  MCPServer.Engine in 'Examples\MCPServer.Engine.pas',
-  MCPServer.Config in 'Examples\MCPServer.Config.pas';
+  MCPServer.Engine in 'MCPServer.Engine.pas',
+  MCPServer.Config in 'MCPServer.Config.pas',
+  MCPServer.Adapter in 'MCPServer.Adapter.pas';
 
 end.

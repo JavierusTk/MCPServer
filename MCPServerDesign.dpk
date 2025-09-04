@@ -1,4 +1,4 @@
-package MCPServerDesign.FMX;
+﻿package MCPServerDesign;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -13,8 +13,8 @@ package MCPServerDesign.FMX;
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION OFF}
-{$OVERFLOWCHECKS ON}
-{$RANGECHECKS ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
 {$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES ON}
@@ -26,18 +26,16 @@ package MCPServerDesign.FMX;
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'MCP Server FMX Design-time Components'}
-{$DESIGNONLY}
-{$IMPLICITBUILD OFF}
 {$LIBSUFFIX AUTO}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
 
 requires
   rtl,
-  fmx,
-  designide,
-  MCPServerCore;
+  MCPServerCore,
+  DesignIDE;
 
 contains
-  MCPServer.FMX.Adapter in 'MCPServer.FMX.Adapter.pas',
-  MCPServer.Register.FMX in 'MCPServer.Register.FMX.pas';
+  MCPServer.Register in 'MCPServer.Register.pas';
 
 end.
