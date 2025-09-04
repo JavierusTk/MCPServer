@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/mnt/w/Delphi-MCP-Server/src/**)",
+      "Read(/mnt/w/Delphi-MCP-Server/src/Server/**)",
+      "Read(/mnt/w/Delphi-MCP-Server/src/Core/**)",
+      "Read(/mnt/w/Delphi-MCP-Server/src/Core/**)",
+      "Bash(compilar ExampleMCPEngine)",
+      "Bash(compilar MCPServerCore)",
+      "Bash(compilar MCPServerDesign)",
+      "Bash(compilar MCPServerDesign.VCL)",
+      "Bash(compilar MCPServerDesign.FMX)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

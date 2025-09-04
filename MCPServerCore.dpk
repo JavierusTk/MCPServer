@@ -1,0 +1,58 @@
+package MCPServerCore;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'MCP Server Core - RTL-only runtime package'}
+{$LIBSUFFIX AUTO}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  IndySystem,
+  IndyProtocols,
+  IndyCore,
+  TaurusTLS_RT;
+
+contains
+  MCPServer.Types in 'W:\Delphi-MCP-Server\src\Protocol\MCPServer.Types.pas',
+  MCPServer.Serializer in 'W:\Delphi-MCP-Server\src\Protocol\MCPServer.Serializer.pas',
+  MCPServer.Schema.Generator in 'W:\Delphi-MCP-Server\src\Protocol\MCPServer.Schema.Generator.pas',
+  MCPServer.Logger in 'W:\Delphi-MCP-Server\src\Core\MCPServer.Logger.pas',
+  MCPServer.Settings in 'W:\Delphi-MCP-Server\src\Core\MCPServer.Settings.pas',
+  MCPServer.Registration in 'W:\Delphi-MCP-Server\src\Core\MCPServer.Registration.pas',
+  MCPServer.ManagerRegistry in 'W:\Delphi-MCP-Server\src\Core\MCPServer.ManagerRegistry.pas',
+  MCPServer.Tool.Base in 'W:\Delphi-MCP-Server\src\Tools\MCPServer.Tool.Base.pas',
+  MCPServer.Resource.Base in 'W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Base.pas',
+  MCPServer.IdHTTPServer in 'W:\Delphi-MCP-Server\src\Server\MCPServer.IdHTTPServer.pas',
+  MCPServer.CoreManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.CoreManager.pas',
+  MCPServer.ToolsManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas',
+  MCPServer.ResourcesManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ResourcesManager.pas',
+  MCPServer.Resource.Server in 'W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Server.pas',
+  MCPServer.Engine in 'MCPServer.Engine.pas',
+  MCPServer.Config in 'MCPServer.Config.pas';
+
+end.
