@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'MCP Server VCL Example'
-  ClientHeight = 500
-  ClientWidth = 700
+  ClientHeight = 639
+  ClientWidth = 880
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object MainForm: TMainForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 700
-    Height = 89
+    Width = 880
+    Height = 150
     Align = alTop
     TabOrder = 0
     object Label1: TLabel
@@ -72,15 +72,15 @@ object MainForm: TMainForm
     object GroupBox1: TGroupBox
       Left = 288
       Top = 8
-      Width = 401
-      Height = 73
+      Width = 577
+      Height = 121
       Caption = 'Connection Instructions'
       TabOrder = 4
       object MemoInstructions: TMemo
         Left = 8
         Top = 16
-        Width = 385
-        Height = 49
+        Width = 561
+        Height = 102
         BorderStyle = bsNone
         Color = clBtnFace
         Lines.Strings = (
@@ -93,8 +93,8 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 481
-    Width = 700
+    Top = 620
+    Width = 880
     Height = 19
     Panels = <>
     SimplePanel = True
@@ -102,9 +102,9 @@ object MainForm: TMainForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Top = 89
-    Width = 700
-    Height = 392
+    Top = 150
+    Width = 880
+    Height = 470
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 2
@@ -113,8 +113,8 @@ object MainForm: TMainForm
       object MemoLog: TMemo
         Left = 0
         Top = 0
-        Width = 692
-        Height = 364
+        Width = 872
+        Height = 442
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -133,8 +133,8 @@ object MainForm: TMainForm
       object ListBoxTools: TListBox
         Left = 0
         Top = 41
-        Width = 692
-        Height = 323
+        Width = 872
+        Height = 401
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -148,7 +148,7 @@ object MainForm: TMainForm
       object btnRefreshTools: TButton
         Left = 0
         Top = 0
-        Width = 692
+        Width = 872
         Height = 41
         Align = alTop
         Caption = 'Refresh Tools List'

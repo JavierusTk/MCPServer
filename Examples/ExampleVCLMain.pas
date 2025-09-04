@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
-  MCPServer.Engine;
+  MCPServer.Adapter;
 
 type
   TMainForm = class(TForm)
@@ -22,7 +22,6 @@ type
     ListBoxTools: TListBox;
     Label2: TLabel;
     edtHost: TEdit;
-    Label3: TLabel;
     btnRefreshTools: TButton;
     GroupBox1: TGroupBox;
     MemoInstructions: TMemo;
@@ -32,7 +31,7 @@ type
     procedure btnStopClick(Sender: TObject);
     procedure btnRefreshToolsClick(Sender: TObject);
   private
-    FMCPEngine: TMCPEngineVCL;
+    FMCPEngine: TMCPEngineServer;
     procedure UpdateUI;
     procedure OnMCPLog(Sender: TObject; const Level, Message: string);
     procedure OnMCPStarted(Sender: TObject);
@@ -52,16 +51,16 @@ implementation
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Create the MCP Engine VCL component
-  FMCPEngine := TMCPEngineVCL.Create(Self);
+  FMCPEngine := TMCPEngineServer.Create(Self);
   FMCPEngine.OnLog := OnMCPLog;
   FMCPEngine.OnStarted := OnMCPStarted;
   FMCPEngine.OnStopped := OnMCPStopped;
   FMCPEngine.OnError := OnMCPError;
-  
+
   // Set default values
   edtPort.Text := '3001';
   edtHost.Text := 'localhost';
-  
+
   // Setup instructions
   MemoInstructions.Lines.Clear;
   MemoInstructions.Lines.Add('MCP Server VCL Example');
@@ -77,7 +76,7 @@ begin
   MemoInstructions.Lines.Add('');
   MemoInstructions.Lines.Add('4. Use the tools in Claude Code');
   MemoInstructions.Lines.Add('5. Watch the logs in the Log tab');
-  
+
   UpdateUI;
 end;
 
@@ -180,7 +179,7 @@ end;
 
 procedure TMainForm.OnMCPLog(Sender: TObject; const Level, Message: string);
 begin
-  FMCPEngine.LogToMemo(MemoLog, Level, Message);
+  MemoLog.Lines.Add(Level+': '+Message);
 end;
 
 procedure TMainForm.OnMCPStarted(Sender: TObject);
