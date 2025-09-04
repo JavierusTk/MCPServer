@@ -12,6 +12,15 @@
         <Projects Include="MCPServerDesign.VCL.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Examples\ExampleMCPEngine.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Examples\CyberMaxHelloMCP.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ExampleVCLApp.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +56,41 @@
     <Target Name="MCPServerDesign_VCL:Make">
         <MSBuild Projects="MCPServerDesign.VCL.dproj" Targets="Make"/>
     </Target>
+    <Target Name="ExampleMCPEngine">
+        <MSBuild Projects="Examples\ExampleMCPEngine.dproj"/>
+    </Target>
+    <Target Name="ExampleMCPEngine:Clean">
+        <MSBuild Projects="Examples\ExampleMCPEngine.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExampleMCPEngine:Make">
+        <MSBuild Projects="Examples\ExampleMCPEngine.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="CyberMaxHelloMCP">
+        <MSBuild Projects="Examples\CyberMaxHelloMCP.dproj"/>
+    </Target>
+    <Target Name="CyberMaxHelloMCP:Clean">
+        <MSBuild Projects="Examples\CyberMaxHelloMCP.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CyberMaxHelloMCP:Make">
+        <MSBuild Projects="Examples\CyberMaxHelloMCP.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ExampleVCLApp">
+        <MSBuild Projects="ExampleVCLApp.dproj"/>
+    </Target>
+    <Target Name="ExampleVCLApp:Clean">
+        <MSBuild Projects="ExampleVCLApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExampleVCLApp:Make">
+        <MSBuild Projects="ExampleVCLApp.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MCPServerCore;MCPServerDesign_FMX;MCPServerDesign_VCL"/>
+        <CallTarget Targets="MCPServerCore;MCPServerDesign_FMX;MCPServerDesign_VCL;ExampleMCPEngine;CyberMaxHelloMCP;ExampleVCLApp"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MCPServerCore:Clean;MCPServerDesign_FMX:Clean;MCPServerDesign_VCL:Clean"/>
+        <CallTarget Targets="MCPServerCore:Clean;MCPServerDesign_FMX:Clean;MCPServerDesign_VCL:Clean;ExampleMCPEngine:Clean;CyberMaxHelloMCP:Clean;ExampleVCLApp:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MCPServerCore:Make;MCPServerDesign_FMX:Make;MCPServerDesign_VCL:Make"/>
+        <CallTarget Targets="MCPServerCore:Make;MCPServerDesign_FMX:Make;MCPServerDesign_VCL:Make;ExampleMCPEngine:Make;CyberMaxHelloMCP:Make;ExampleVCLApp:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

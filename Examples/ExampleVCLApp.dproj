@@ -1,13 +1,13 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{6FB00D59-CBEF-40FE-ACD8-32AB7ACB6B6D}</ProjectGuid>
-        <MainSource>MCPServerCore.dpk</MainSource>
+        <ProjectGuid>{80149EB6-CE7A-4BCA-8246-F1630CDA1951}</ProjectGuid>
+        <MainSource>ExampleVCLApp.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <ProjectName Condition="'$(ProjectName)'==''">MCPServerCore</ProjectName>
-        <TargetedPlatforms>1573889</TargetedPlatforms>
-        <AppType>Package</AppType>
-        <FrameworkType>None</FrameworkType>
+        <ProjectName Condition="'$(ProjectName)'==''">ExampleVCLApp</ProjectName>
+        <TargetedPlatforms>525313</TargetedPlatforms>
+        <AppType>Application</AppType>
+        <FrameworkType>VCL</FrameworkType>
         <ProjectVersion>20.3</ProjectVersion>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
     </PropertyGroup>
@@ -24,9 +24,20 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
         <Cfg_1>true</Cfg_1>
         <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
@@ -46,7 +57,6 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
-    <Import Project="W:\Delphi Current Version.optset" Condition="'$(Base)'!='' And Exists('W:\Delphi Current Version.optset')"/>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_E>false</DCC_E>
         <DCC_F>false</DCC_F>
@@ -54,17 +64,10 @@
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
         <DCC_ImageBase>00400000</DCC_ImageBase>
-        <GenDll>true</GenDll>
-        <GenPackage>true</GenPackage>
-        <SanitizedProjectName>MCPServerCore</SanitizedProjectName>
-        <DCC_Description>MCP Server Core - RTL-only runtime package</DCC_Description>
-        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
-        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <SanitizedProjectName>ExampleVCLApp</SanitizedProjectName>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>3082</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
-        <DllSuffix>$(Auto)</DllSuffix>
-        <CfgDependentOn>W:\Delphi Current Version.optset</CfgDependentOn>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_iOSDevice64)'!=''">
         <iOS_AppStore1024>$(BDS)\bin\Artwork\iOS\iPhone\FM_ApplicationIcon_1024x1024.png</iOS_AppStore1024>
@@ -75,12 +78,22 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -93,19 +106,15 @@
         <BT_BuildType>Debug</BT_BuildType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="rtl.dcp"/>
-        <DCCReference Include="IndySystem.dcp"/>
-        <DCCReference Include="IndyProtocols.dcp"/>
-        <DCCReference Include="IndyCore.dcp"/>
-        <DCCReference Include="TaurusTLS_RT.dcp"/>
+        <DCCReference Include="ExampleVCLMain.pas">
+            <Form>MainForm</Form>
+        </DCCReference>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Protocol\MCPServer.Types.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Protocol\MCPServer.Serializer.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Protocol\MCPServer.Schema.Generator.pas"/>
@@ -120,11 +129,14 @@
         <DCCReference Include="W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Managers\MCPServer.ResourcesManager.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Server.pas"/>
-        <DCCReference Include="Examples\MCPServer.Engine.pas"/>
-        <DCCReference Include="Examples\MCPServer.Config.pas"/>
+        <DCCReference Include="MCPServer.Engine.pas"/>
+        <DCCReference Include="MCPServer.Config.pas"/>
+        <DCCReference Include="MCPServer.VCL.Adapter.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.HelloCyberMax.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.CyberEcho.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.CyberTime.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
-            <DependentOn>W:\Delphi Current Version.optset</DependentOn>
         </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
@@ -137,11 +149,11 @@
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>
-        <Borland.ProjectType>Package</Borland.ProjectType>
+        <Borland.ProjectType/>
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">MCPServerCore.dpk</Source>
+                    <Source Name="MainSource">ExampleVCLApp.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>
@@ -149,7 +161,6 @@
                 <Platform value="iOSSimARM64">True</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
-                <Platform value="Win64x">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

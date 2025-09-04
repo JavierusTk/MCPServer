@@ -1,4 +1,4 @@
-unit MCPServer.Tool.HelloCyberMax;
+﻿unit MCPServer.Tool.HelloCyberMax;
 
 interface
 
@@ -41,7 +41,6 @@ end;
 function THelloCyberMaxTool.GetAvailableModules: string;
 var
   Modules: TStringList;
-  ModulePath: string;
 begin
   Modules := TStringList.Create;
   try
