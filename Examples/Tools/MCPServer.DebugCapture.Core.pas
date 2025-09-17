@@ -171,6 +171,7 @@ end;
 function TOutputDebugStringCapture.InitializeCapture: Boolean;
 var
   LastError: DWORD;
+  ExistingEvent: THandle;
 begin
   Result := False;
   FInitError := '';
@@ -186,131 +187,95 @@ begin
 
     TLogger.Info('Initializing Windows debug capture...');
 
+    // First check if another debugger is already capturing
+    TLogger.Debug('Checking for existing debugger...');
+
+    // Check global objects first (DebugView, etc use global)
+    ExistingEvent := OpenEvent(SYNCHRONIZE, False, 'DBWIN_BUFFER_READY');
+    if ExistingEvent <> 0 then
+    begin
+      CloseHandle(ExistingEvent);
+      FInitError := 'Another debugger (like DebugView) is already capturing debug output. Please close it first.';
+      TLogger.Warning(FInitError);
+      Exit;
+    end;
+
+    // Check local objects (another instance of our server)
+    ExistingEvent := OpenEvent(SYNCHRONIZE, False, 'Local\DBWIN_BUFFER_READY');
+    if ExistingEvent <> 0 then
+    begin
+      CloseHandle(ExistingEvent);
+      FInitError := 'Another instance of the debug capture is already running in this session.';
+      TLogger.Warning(FInitError);
+      Exit;
+    end;
+
   try
-    // Try to open existing mutex first (another debugger might be running)
-    // Use Local\ prefix for session-local objects (doesn't require admin rights)
-    TLogger.Debug('Attempting to open/create Local\DBWIN_BUFFER_MUTEX');
-    FMutex := OpenMutex(SYNCHRONIZE, False, 'Local\DBWIN_BUFFER_MUTEX');
+    // Try to create mutex (should succeed if no other debugger)
+    TLogger.Debug('Creating Local\\DBWIN_BUFFER_MUTEX');
+    FMutex := CreateMutex(nil, False, 'Local\DBWIN_BUFFER_MUTEX');
     if FMutex = 0 then
     begin
-      FMutex := CreateMutex(nil, False, 'Local\DBWIN_BUFFER_MUTEX');
-      if FMutex = 0 then
-      begin
-        LastError := GetLastError;
-        FInitError := Format('Failed to create DBWIN_BUFFER_MUTEX (Error: %d)', [LastError]);
-        TLogger.Error(FInitError);
-        Exit;
-      end;
-      TLogger.Debug('Created new Local\DBWIN_BUFFER_MUTEX');
-    end
-    else
-      TLogger.Debug('Opened existing Local\DBWIN_BUFFER_MUTEX');
+      LastError := GetLastError;
+      FInitError := Format('Failed to create DBWIN_BUFFER_MUTEX (Error: %d)', [LastError]);
+      TLogger.Error(FInitError);
+      Exit;
+    end;
+    TLogger.Debug('Created Local\DBWIN_BUFFER_MUTEX');
 
-    // Try to open existing events first
-    TLogger.Debug('Attempting to open/create Local\DBWIN_BUFFER_READY event');
-    FBufferReadyEvent := OpenEvent(EVENT_ALL_ACCESS, False, 'Local\DBWIN_BUFFER_READY');
+    // Create the events (we already checked they don't exist)
+    TLogger.Debug('Creating Local\DBWIN_BUFFER_READY event');
+    FBufferReadyEvent := CreateEvent(nil, False, True, 'Local\DBWIN_BUFFER_READY');
     if FBufferReadyEvent = 0 then
     begin
-      FBufferReadyEvent := CreateEvent(nil, False, True, 'Local\DBWIN_BUFFER_READY');
-      if FBufferReadyEvent = 0 then
-      begin
-        LastError := GetLastError;
-        if LastError = ERROR_ALREADY_EXISTS then
-        begin
-          FInitError := 'Another debugger is already capturing debug output';
-          TLogger.Warning('Another debugger is already capturing - trying to open existing event');
-          // Try to open the existing event
-          FBufferReadyEvent := OpenEvent(EVENT_ALL_ACCESS, False, 'Local\DBWIN_BUFFER_READY');
-          if FBufferReadyEvent = 0 then
-          begin
-            TLogger.Error('Failed to open existing DBWIN_BUFFER_READY event');
-            CleanupCapture;
-            Exit;
-          end;
-        end
-        else
-        begin
-          FInitError := Format('Failed to create DBWIN_BUFFER_READY event (Error: %d)', [LastError]);
-          TLogger.Error(FInitError);
-          CleanupCapture;
-          Exit;
-        end;
-      end
+      LastError := GetLastError;
+      if LastError = ERROR_ACCESS_DENIED then
+        FInitError := 'Access denied creating DBWIN_BUFFER_READY. Try running without admin privileges.'
+      else if LastError = ERROR_ALREADY_EXISTS then
+        FInitError := 'Debug capture objects already exist. This should not happen.'
       else
-        TLogger.Debug('Created new DBWIN_BUFFER_READY event');
-    end
-    else
-      TLogger.Debug('Opened existing DBWIN_BUFFER_READY event');
+        FInitError := Format('Failed to create DBWIN_BUFFER_READY event (Error: %d)', [LastError]);
+      TLogger.Error(FInitError);
+      CleanupCapture;
+      Exit;
+    end;
+    TLogger.Debug('Created DBWIN_BUFFER_READY event');
 
-    TLogger.Debug('Attempting to open/create Local\DBWIN_DATA_READY event');
-    FDataReadyEvent := OpenEvent(EVENT_ALL_ACCESS, False, 'Local\DBWIN_DATA_READY');
+    TLogger.Debug('Creating Local\DBWIN_DATA_READY event');
+    FDataReadyEvent := CreateEvent(nil, False, False, 'Local\DBWIN_DATA_READY');
     if FDataReadyEvent = 0 then
     begin
-      FDataReadyEvent := CreateEvent(nil, False, False, 'Local\DBWIN_DATA_READY');
-      if FDataReadyEvent = 0 then
-      begin
-        LastError := GetLastError;
-        if LastError = ERROR_ALREADY_EXISTS then
-        begin
-          TLogger.Warning('DBWIN_DATA_READY already exists - trying to open');
-          FDataReadyEvent := OpenEvent(EVENT_ALL_ACCESS, False, 'Local\DBWIN_DATA_READY');
-          if FDataReadyEvent = 0 then
-          begin
-            FInitError := 'Failed to open existing DBWIN_DATA_READY event';
-            TLogger.Error(FInitError);
-            CleanupCapture;
-            Exit;
-          end;
-        end
-        else
-        begin
-          FInitError := Format('Failed to create DBWIN_DATA_READY event (Error: %d)', [LastError]);
-          TLogger.Error(FInitError);
-          CleanupCapture;
-          Exit;
-        end;
-      end
+      LastError := GetLastError;
+      if LastError = ERROR_ACCESS_DENIED then
+        FInitError := 'Access denied creating DBWIN_DATA_READY. Try running without admin privileges.'
+      else if LastError = ERROR_ALREADY_EXISTS then
+        FInitError := 'Debug capture objects already exist. This should not happen.'
       else
-        TLogger.Debug('Created new DBWIN_DATA_READY event');
-    end
-    else
-      TLogger.Debug('Opened existing DBWIN_DATA_READY event');
+        FInitError := Format('Failed to create DBWIN_DATA_READY event (Error: %d)', [LastError]);
+      TLogger.Error(FInitError);
+      CleanupCapture;
+      Exit;
+    end;
+    TLogger.Debug('Created DBWIN_DATA_READY event');
 
-    // Try to open existing file mapping first
-    TLogger.Debug('Attempting to open/create Local\DBWIN_BUFFER file mapping');
-    FSharedFile := OpenFileMapping(FILE_MAP_ALL_ACCESS, False, 'Local\DBWIN_BUFFER');
+    // Create the shared memory buffer
+    TLogger.Debug('Creating Local\DBWIN_BUFFER file mapping');
+    FSharedFile := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+      0, DBWIN_BUFFER_SIZE, 'Local\DBWIN_BUFFER');
     if FSharedFile = 0 then
     begin
-      FSharedFile := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
-        0, DBWIN_BUFFER_SIZE, 'Local\DBWIN_BUFFER');
-      if FSharedFile = 0 then
-      begin
-        LastError := GetLastError;
-        if LastError = ERROR_ALREADY_EXISTS then
-        begin
-          FInitError := 'Another debugger is already using DBWIN_BUFFER';
-          TLogger.Warning('DBWIN_BUFFER already exists - trying to open');
-          FSharedFile := OpenFileMapping(FILE_MAP_ALL_ACCESS, False, 'Local\DBWIN_BUFFER');
-          if FSharedFile = 0 then
-          begin
-            TLogger.Error('Failed to open existing DBWIN_BUFFER');
-            CleanupCapture;
-            Exit;
-          end;
-        end
-        else
-        begin
-          FInitError := Format('Failed to create DBWIN_BUFFER shared memory (Error: %d)', [LastError]);
-          TLogger.Error(FInitError);
-          CleanupCapture;
-          Exit;
-        end;
-      end
+      LastError := GetLastError;
+      if LastError = ERROR_ACCESS_DENIED then
+        FInitError := 'Access denied creating DBWIN_BUFFER. Try running without admin privileges.'
+      else if LastError = ERROR_ALREADY_EXISTS then
+        FInitError := 'Debug capture buffer already exists. This should not happen.'
       else
-        TLogger.Debug('Created new DBWIN_BUFFER file mapping');
-    end
-    else
-      TLogger.Debug('Opened existing DBWIN_BUFFER file mapping');
+        FInitError := Format('Failed to create DBWIN_BUFFER shared memory (Error: %d)', [LastError]);
+      TLogger.Error(FInitError);
+      CleanupCapture;
+      Exit;
+    end;
+    TLogger.Debug('Created DBWIN_BUFFER file mapping');
 
     FSharedBuffer := MapViewOfFile(FSharedFile, FILE_MAP_ALL_ACCESS, 0, 0, 0);
     if not Assigned(FSharedBuffer) then
