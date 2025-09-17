@@ -2,8 +2,6 @@
 
 Servidor Model Context Protocol (MCP) para integración con Claude Code.
 
-[Información sobre CyberMAX ERP](CYBERMAX.md)
-
 ## Descripción
 
 Este servidor MCP implementado en Delphi proporciona herramientas de ejemplo para la integración con Claude Code, y herramientas avanzadas de captura de mensajes debug del sistema Windows (OutputDebugString). El proyecto incluye:
@@ -11,6 +9,8 @@ Este servidor MCP implementado en Delphi proporciona herramientas de ejemplo par
 - **Herramientas básicas**: Funcionalidad "Hello World" para demostrar la integración MCP
 - **Herramientas de depuración**: Sistema completo de captura y análisis de mensajes OutputDebugString
 - **Arquitectura modular**: Basado en el framework Delphi-MCP-Server con componentes no visuales reutilizables
+
+Construido usando el framework [Delphi-MCP-Server](https://github.com/GDKsoftware/Delphi-MCP-Server).
 
 ## Estructura del Proyecto
 

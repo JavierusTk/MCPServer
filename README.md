@@ -2,7 +2,7 @@
 
 Model Context Protocol (MCP) server for integration with Claude Code.
 
-[Versión en español](README-ES.md) | [CyberMAX ERP Information](CYBERMAX.md)
+[Versión en español](README-ES.md)
 
 ## Description
 
@@ -11,6 +11,8 @@ This Delphi-based MCP server provides:
 - Basic "Hello World" demonstration tools
 - Advanced Windows OutputDebugString capture and analysis tools
 - Reusable non-visual components for building MCP servers
+
+Built using the [Delphi-MCP-Server](https://github.com/GDKsoftware/Delphi-MCP-Server) framework.
 
 ## Project Structure
 
