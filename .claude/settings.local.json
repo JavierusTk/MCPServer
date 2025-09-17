@@ -12,7 +12,9 @@
       "Bash(compilar MCPServerDesign.FMX)",
       "Read(//mnt/w/Delphi-MCP-Server/**)",
       "Bash(compilar CyberMaxHelloMCP)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "mcp__cybermax-hello__get_debug_messages",
+      "mcp__cybermax-hello__start_debug_capture"
     ],
     "deny": [],
     "ask": []

@@ -1,76 +1,138 @@
-# CyberMAX MCP Server - Hello World
+# MCP Server
 
-Servidor Model Context Protocol (MCP) para integración con CyberMAX ERP y Claude Code.
+Model Context Protocol (MCP) server for integration with Claude Code.
 
-## Descripción
+[Versión en español](README-ES.md) | [CyberMAX ERP Information](CYBERMAX.md)
 
-Este es un servidor MCP básico implementado en Delphi que proporciona herramientas de ejemplo para la integración con Claude Code. Utiliza el repositorio base [Delphi-MCP-Server](https://github.com/GDKsoftware/delphi-mcp-server) y extiende su funcionalidad con herramientas específicas para CyberMAX.
+## Description
 
-## Estructura del Proyecto
+This Delphi-based MCP server provides:
+- Integration with Claude Code via Model Context Protocol
+- Basic "Hello World" demonstration tools
+- Advanced Windows OutputDebugString capture and analysis tools
+- Reusable non-visual components for building MCP servers
+
+## Project Structure
 
 ```
-/mnt/w/MCPServer/
-├── CyberMaxHelloMCP.dpr     # Proyecto principal
-├── CyberMaxHelloMCP.exe     # Ejecutable compilado
-├── settings.ini              # Configuración del servidor
-├── README.md                 # Esta documentación
-└── Tools/                    # Herramientas MCP personalizadas
-    ├── MCPServer.Tool.HelloCyberMax.pas
-    ├── MCPServer.Tool.CyberEcho.pas
-    └── MCPServer.Tool.CyberTime.pas
+/mnt/w/MCPserver/
+├── MCPServerCore.dproj       # RTL-only core package
+├── MCPServerDesign.dproj     # Package with visual components
+├── MCPServerDesign.VCL.dpk   # VCL package for IDE
+├── MCPServerDesign.FMX.dpk   # FMX package for IDE
+├── MCPServer.Engine.pas      # Main server engine
+├── MCPServer.Adapter.pas     # Adapter for non-visual components
+├── MCPServer.Config.pas      # Configuration with builder pattern
+├── MCPServer.Register.pas    # Component registration in IDE
+├── README.md                 # This documentation
+├── README-ES.md              # Spanish documentation
+├── CLAUDE.md                 # Guide for Claude Code
+├── settings.ini              # Server configuration
+└── Examples/                 # Examples and tools
+    ├── CyberMaxHelloMCP.dpr/dproj    # Basic standalone example
+    ├── ExampleMCPEngine.dpr/dproj    # Example with TMCPEngine
+    ├── ExampleVCLApp.dpr/dproj       # VCL application example
+    └── Tools/                        # MCP tools
+        ├── MCPServer.Tool.HelloCyberMax.pas
+        ├── MCPServer.Tool.CyberEcho.pas
+        ├── MCPServer.Tool.CyberTime.pas
+        ├── MCPServer.Tool.StartDebugCapture.pas
+        ├── MCPServer.Tool.StopDebugCapture.pas
+        ├── MCPServer.Tool.GetDebugMessages.pas
+        ├── MCPServer.Tool.GetProcessSummary.pas
+        ├── MCPServer.Tool.GetCaptureStatus.pas
+        ├── MCPServer.Tool.PauseResumeCapture.pas
+        ├── MCPServer.DebugCapture.Core.pas
+        └── MCPServer.DebugCapture.Types.pas
 ```
 
-## Herramientas Disponibles
+## Available Tools
 
-### 1. hello_cybermax
-Devuelve un mensaje de bienvenida e información sobre los módulos de CyberMAX disponibles.
+### Basic Tools
 
-**Parámetros:** Ninguno
+#### 1. hello_cybermax
+Returns a welcome message from the MCP server.
 
-**Ejemplo de respuesta:**
+**Parameters:** None
+
+**Example response:**
 ```
 ¡Hola desde CyberMAX MCP Server!
 Server Version: 1.0.0
-Available CyberMAX Modules:
-  - TCConta (Contabilidad/Accounting)
-  - Gestion2000 (Ventas y Compras/Sales & Purchasing)
-  - Almacen (Warehouse Management)
-  ...
+MCP Protocol: 2024-11-05
+Ready to assist!
 ```
 
-### 2. cyber_echo
-Devuelve el mensaje enviado, opcionalmente en mayúsculas.
+#### 2. cyber_echo
+Echoes back the sent message, optionally in uppercase.
 
-**Parámetros:**
-- `message` (string, requerido): El mensaje a devolver
-- `uppercase` (boolean, opcional): Si true, devuelve el mensaje en mayúsculas
+**Parameters:**
+- `message` (string, required): The message to echo back
+- `uppercase` (boolean, optional): If true, returns the message in uppercase
 
-**Ejemplo de uso:**
-```json
-{
-  "message": "Hola desde Claude Code",
-  "uppercase": false
-}
-```
+#### 3. cyber_time
+Returns the current system time with customizable formatting.
 
-### 3. cyber_time
-Devuelve la hora actual del sistema con formato personalizable.
+**Parameters:**
+- `format` (string, optional): Date/time format
+- `includemilliseconds` (boolean, optional): Include milliseconds
+- `timezone` (string, optional): Timezone offset
 
-**Parámetros:**
-- `format` (string, opcional): Formato de fecha/hora (default: "yyyy-mm-dd hh:nn:ss")
-- `includemilliseconds` (boolean, opcional): Incluir milisegundos
-- `timezone` (string, opcional): Offset de zona horaria (ej: "+2", "-5")
+### Debug Capture Tools
 
-**Ejemplo de respuesta:**
-```
-Current Time: 2025-09-03 13:17:43
-Date: miércoles, septiembre 3, 2025
-Time: 01:17:43 PM
-ISO 8601: 2025-09-03T13:17:43
-Unix Timestamp: 1756905463
-```
+**Note:** No administrator privileges required! The debug capture uses session-local objects to capture OutputDebugString messages from user applications in your Windows session.
 
-## Configuración del Servidor
+#### 4. start_debug_capture
+Starts a Windows OutputDebugString message capture session.
+
+**Parameters:**
+- `sessionname` (string, optional): Descriptive session name
+- `processfilter` (string, optional): Filter by process name
+- `messagefilter` (string, optional): Filter messages containing this text
+- `maxmessages` (integer, optional): Maximum message limit (default: 10000)
+- `includesystem` (boolean, optional): Include system processes
+
+**Returns:** Session ID to use with other tools
+
+#### 5. stop_debug_capture
+Stops an active capture session.
+
+**Parameters:**
+- `sessionid` (string, required): ID of the session to stop
+
+#### 6. get_debug_messages
+Retrieves captured messages with optional filters.
+
+**Parameters:**
+- `sessionid` (string, required): Session ID
+- `limit` (integer, optional): Maximum messages to return (default: 100)
+- `offset` (integer, optional): Offset for pagination
+- `sincetimestamp` (string, optional): Filter from this date/time
+- `processid` (integer, optional): Filter by PID
+- `processname` (string, optional): Filter by process name
+- `messagecontains` (string, optional): Filter messages containing text
+- `messageregex` (string, optional): Filter with regular expression
+
+#### 7. get_process_summary
+Gets statistics of processes that have emitted messages.
+
+**Parameters:**
+- `sessionid` (string, required): Session ID
+
+#### 8. get_capture_status
+Gets capture session status information.
+
+**Parameters:**
+- `sessionid` (string, required): Session ID
+
+#### 9. pause_resume_capture
+Pauses or resumes message capture.
+
+**Parameters:**
+- `sessionid` (string, required): Session ID
+- `pause` (boolean, required): true to pause, false to resume
+
+## Server Configuration
 
 ### settings.ini
 ```ini
@@ -88,218 +150,281 @@ ConsoleLog=True
 
 [MCP]
 ProtocolVersion=2024-11-05
-ServerName=CyberMAX MCP Server
+ServerName=MCP Server
 ServerVersion=1.0.0
 ```
 
-**Nota importante:** El puerto por defecto es 3001 (cambiado desde 3000 para evitar conflictos).
+**Important note:** Default port is 3001 (changed from 3000 to avoid conflicts).
 
-## Compilación
+## Compilation
 
-### Prerrequisitos
+### Prerequisites
 - RAD Studio 12 (Delphi 29.0)
-- Repositorio base Delphi-MCP-Server clonado en `/mnt/w/Delphi-MCP-Server`
-- TaurusTLS_RT en los runtime packages
+- Base Delphi-MCP-Server repository cloned at `/mnt/w/Delphi-MCP-Server`
+- TaurusTLS_RT in runtime packages
 
-### Compilar el proyecto
-Para compilar, solicitar a Claude Code que use el compiler-agent con el archivo de proyecto:
+### Building the Projects
+
+#### Option 1: Standalone Example (CyberMaxHelloMCP)
 ```
-Compilar CyberMaxHelloMCP.dproj
-```
-
-El compiler-agent se encargará de ejecutar el compilador Delphi con la configuración correcta.
-
-**Nota:** 
-- El compiler-agent requiere el archivo .dproj (proyecto), no el .dpr
-- No intentar usar dcc32 directamente desde WSL, ya que no funcionará
-- Desde Windows sí se puede usar dcc32 directamente si se prefiere
-
-## Ejecución del Servidor
-
-### Desde Windows
-```batch
-cd W:\MCPServer
-CyberMaxHelloMCP.exe
+Compilar Examples/CyberMaxHelloMCP.dproj
 ```
 
-### Desde WSL
+#### Option 2: Example with TMCPEngine
+```
+Compilar Examples/ExampleMCPEngine.dproj
+```
+
+#### Option 3: VCL Application
+```
+Compilar Examples/ExampleVCLApp.dproj
+```
+
+#### Building the Packages (for component development)
+```
+Compilar MCPServerCore.dproj       # RTL-only package
+Compilar MCPServerDesign.dproj     # Package with visual components
+```
+
+**Note:** The compiler-agent requires the .dproj file
+
+## Running the Server
+
+### Run CyberMaxHelloMCP (basic example)
 ```bash
-cd /mnt/w/MCPServer
+cd /mnt/w/MCPserver/Examples
 ./CyberMaxHelloMCP.exe
 ```
 
-El servidor mostrará:
+### Run ExampleMCPEngine (with advanced configuration)
+```bash
+cd /mnt/w/MCPserver/Examples
+./ExampleMCPEngine.exe
 ```
-[INFO] Starting CyberMAX MCP Server...
-[INFO] Listening on port 3001
-[INFO] MCP Server started on http://localhost:3001
+
+The server will display:
+```
+========================================
+ CyberMAX MCP Server - Hello World v1.0
+========================================
 Server started successfully!
 
 Available tools:
-  - hello_cybermax : Get greeting and CyberMAX info
-  - cyber_echo     : Echo back your message
-  - cyber_time     : Get current system time
+  Basic Tools:
+    - hello_cybermax        : Get greeting and CyberMAX info
+    - cyber_echo           : Echo back your message
+    - cyber_time           : Get current system time
+
+  Debug Capture Tools:
+    - start_debug_capture  : Start capturing OutputDebugString
+    - stop_debug_capture   : Stop capture session
+    - get_debug_messages   : Retrieve captured messages
+    - get_process_summary  : Get process statistics
+    - get_capture_status   : Get session information
+    - pause_resume_capture : Pause/resume capture
 
 Press CTRL+C to stop...
 ```
 
-## Configuración en Claude Code
+## Configuring Claude Code
 
-### 1. Determinar la IP del Sistema Windows
+### 1. Determine Windows System IP
 
-Desde WSL, ejecutar:
+From WSL, run:
 ```bash
 ip route | grep default | awk '{print $3}'
-# O verificar con: hostname -I
+# Or verify with: hostname -I
 ```
 
-En este caso, la IP es: `192.168.0.89`
+In this case, the IP is: `192.168.0.89`
 
-### 2. Configurar Claude Code
+### 2. Configure Claude Code
 
-El servidor MCP utiliza transporte HTTP con el endpoint `/mcp`. Claude Code requiere configuración mediante línea de comandos.
+The MCP server uses HTTP transport with the `/mcp` endpoint. Claude Code requires command-line configuration.
 
-#### Método recomendado - Comando `mcp add`:
+#### Recommended method - `mcp add` command:
 ```bash
 claude mcp add cybermax-hello http://192.168.0.89:3001/mcp --scope user -t http
 ```
 
-**Parámetros importantes:**
-- `cybermax-hello`: Nombre del servidor MCP
-- `http://192.168.0.89:3001/mcp`: URL completa con endpoint
-- `--scope user`: Alcance de configuración (user, project, o local)
-- `-t http`: Tipo de transporte HTTP (obligatorio para servidores remotos)
+**Important parameters:**
+- `cybermax-hello`: MCP server name
+- `http://192.168.0.89:3001/mcp`: Complete URL with endpoint
+- `--scope user`: Configuration scope (user, project, or local)
+- `-t http`: HTTP transport type (required for remote servers)
 
-#### Método alternativo - Comando interactivo `/config`:
+#### Alternative method - Interactive `/config` command:
 ```bash
-# Dentro de Claude Code, usar:
+# Within Claude Code, use:
 /config
 
-# Luego añadir manualmente el servidor
+# Then manually add the server
 ```
 
-**Notas importantes:** 
-- El flag `--mcp-config` tiene un bug conocido en la versión v1.0.73 y no funciona correctamente
-- Para servidores HTTP remotos, SIEMPRE especificar `-t http`
-- Debe usar el endpoint `/mcp` (no solo la IP y puerto)
-- El formato correcto es: `http://IP:PUERTO/mcp`
+**Important notes:**
+- The `--mcp-config` flag has a known bug in version v1.0.73 and doesn't work correctly
+- For remote HTTP servers, ALWAYS specify `-t http`
+- Must use the `/mcp` endpoint (not just IP and port)
+- Correct format is: `http://IP:PORT/mcp`
 
-### 3. Verificar la Conexión
+### 3. Verify Connection
 
-Una vez configurado, las herramientas aparecerán con el prefijo `mcp__cybermax-hello__`:
+Once configured, tools will appear with the prefix `mcp__cybermax-hello__`:
 - `mcp__cybermax-hello__hello_cybermax`
 - `mcp__cybermax-hello__cyber_echo`
 - `mcp__cybermax-hello__cyber_time`
 
-Para verificar que el servidor está disponible:
+To verify the server is available:
 ```bash
-# Listar servidores MCP configurados
+# List configured MCP servers
 claude mcp list
 
-# O dentro de Claude Code
+# Or within Claude Code
 /mcp
 ```
 
-## Arquitectura Técnica
+## Technical Architecture
 
-### Patrón de Herramientas
+### Main Components
 
-Cada herramienta sigue este patrón:
+#### TMCPEngine
+Main non-visual component that encapsulates all MCP server functionality:
+- Automatic server lifecycle management
+- Configuration via published properties
+- Events for logging and control
+- Auto-registration of tools
+- CORS support
 
-1. **Clase de Parámetros** (TToolParams)
-   ```pascal
-   TCyberEchoParams = class
-     property Message: string;
-     property UpperCase: Boolean;
-   end;
-   ```
+#### TMCPAdapter
+Adapter component allowing TMCPEngine use in VCL/FMX applications:
+- Published properties for design-time configuration
+- Events visible in Object Inspector
+- Delphi IDE integration
 
-2. **Clase de Herramienta** (TMCPToolBase<TParams>)
-   ```pascal
-   TCyberEchoTool = class(TMCPToolBase<TCyberEchoParams>)
-     function ExecuteWithParams(const Params: TCyberEchoParams): string;
-   end;
-   ```
-
-3. **Registro Automático**
-   ```pascal
-   initialization
-     TMCPRegistry.RegisterTool('cyber_echo', 
-       function: IMCPTool
-       begin
-         Result := TCyberEchoTool.Create;
-       end
-     );
-   ```
-
-### Manejo de Errores
-
-El servidor implementa manejo robusto de errores:
-- Validación de parámetros antes de procesamiento
-- Inicialización explícita de valores opcionales en constructores
-- Uso directo de propiedades sin complejidad innecesaria
-
-Ejemplo correcto en cyber_echo:
+#### TMCPConfig
+Configuration class with builder pattern:
 ```pascal
-// Inicialización en constructor
+Config := TMCPConfig.Create
+  .WithPort(3001)
+  .WithHost('localhost')
+  .WithServerName('MCP Server')
+  .WithCORS(True);
+```
+
+### Tool Pattern
+
+Each tool implements:
+
+1. **Parameter class** with RTTI attributes for schema generation
+2. **Tool class** extending `TMCPToolBase<TParams>`
+3. **Automatic registration** in initialization section
+
+### Error Handling
+
+The server implements robust error handling:
+- Parameter validation before processing
+- Explicit initialization of optional values in constructors
+- Direct property usage without unnecessary complexity
+
+Correct example in cyber_echo:
+```pascal
+// Initialization in constructor
 constructor TCyberEchoParams.Create;
 begin
   inherited;
   FMessage := '';
-  FUpperCase := False;  // Explícito aunque Delphi lo inicializa a False
+  FUpperCase := False;  // Explicit even though Delphi initializes to False
 end;
 
-// Uso directo y simple de la propiedad
+// Direct and simple property usage
 if Params.UpperCase then
   ProcessedMessage := System.SysUtils.UpperCase(Params.Message)
 else
   ProcessedMessage := Params.Message;
 ```
 
-**Nota importante:** 
-- No usar try-except para leer propiedades simples
-- No copiar valores de propiedades a variables locales sin necesidad
-- Delphi inicializa automáticamente: Boolean→False, Integer→0, String→''
+**Important note:**
+- Don't use try-except for reading simple properties
+- Don't copy property values to local variables unnecessarily
+- Delphi automatically initializes: Boolean→False, Integer→0, String→''
 
-## Solución de Problemas
+## Use Cases
 
-### Puerto en Uso
-Si el puerto 3001 está en uso:
-1. Cambiar en `settings.ini`
-2. Actualizar la configuración en Claude Code
+### Windows Application Debugging
+Debug capture tools enable:
+- Real-time monitoring of OutputDebugString messages
+- Process or message content filtering
+- Non-invasive application behavior analysis
+- Debugging intermittent production issues
+
+## Developing New Tools
+
+To add a new tool:
+
+1. Create parameter class with schema attributes
+2. Implement tool extending `TMCPToolBase<TParams>`
+3. Register in initialization section
+4. Tool is automatically discovered via RTTI
+
+Minimal example:
+```pascal
+type
+  TMyParams = class
+    [SchemaDescription('Parameter description')]
+    property MyParam: string read FMyParam write FMyParam;
+  end;
+
+  TMyTool = class(TMCPToolBase<TMyParams>)
+  protected
+    function ExecuteWithParams(const Params: TMyParams): string; override;
+  public
+    constructor Create; override;
+  end;
+
+initialization
+  TMCPRegistry.RegisterTool('my_tool', function: IMCPTool
+    begin Result := TMyTool.Create; end);
+```
+
+## Troubleshooting
+
+### Port in Use
+If port 3001 is in use:
+1. Change in `settings.ini`
+2. Update configuration in Claude Code
 
 ### Access Violation
-Si aparecen errores de Access Violation:
-1. Verificar inicialización de parámetros opcionales
-2. Añadir constructores con valores por defecto
-3. Implementar manejo defensivo de propiedades
+If Access Violation errors appear:
+1. Verify initialization of optional parameters
+2. Add constructors with default values
+3. Implement defensive property handling
 
-### Servidor No Visible en Claude Code
-1. Verificar que usa transporte HTTP (no stdio)
-2. Confirmar endpoint `/mcp`
-3. Usar IP del sistema Windows, no localhost desde WSL
-4. Verificar firewall de Windows
+### Server Not Visible in Claude Code
+1. Verify it uses HTTP transport (not stdio)
+2. Confirm `/mcp` endpoint
+3. Use Windows system IP, not localhost from WSL
+4. Check Windows firewall
 
-### Proceso Colgado
+### Hung Process
 ```bash
-# Desde WSL
+# From WSL
 taskkill.exe /IM CyberMaxHelloMCP.exe /F
 
-# O buscar y matar el proceso
+# Or find and kill process
 ps aux | grep CyberMax
 kill -9 [PID]
 ```
 
-## Logs y Depuración
+## Logs and Debugging
 
-Los logs del servidor muestran:
-- Inicialización y configuración
-- Cada request JSON-RPC recibido
-- Session ID de Claude Code
-- Respuestas enviadas
-- Errores y excepciones
+Server logs show:
+- Initialization and configuration
+- Each received JSON-RPC request
+- Claude Code Session ID
+- Sent responses
+- Errors and exceptions
 
-Ejemplo de log:
+Log example:
 ```
 [2025-09-03 13:17:14.906] [INFO ] Request: {"method":"tools/call","params":{"name":"cyber_echo",...}}
 [2025-09-03 13:17:14.906] [INFO ] Session ID from header: {ADB063D4-752F-4795-A98D-0E843FDF2AA4}
@@ -307,23 +432,17 @@ Ejemplo de log:
 [2025-09-03 13:17:14.906] [INFO ] Response: {"jsonrpc":"2.0","id":3,"result":{...}}
 ```
 
-## Próximos Pasos
+## Technical Notes
 
-Este servidor "Hello World" es la base para:
-1. Integración con módulos CyberMAX reales
-2. Acceso a bases de datos del ERP
-3. Ejecución de procesos de negocio
-4. Generación de informes
-5. Automatización de tareas administrativas
-
-## Notas de Desarrollo
-
-- **Encoding:** UTF-8 para nuevos archivos
-- **Dependencias:** Utiliza unidades del repositorio base sin duplicación
-- **RTTI:** Descubrimiento automático de herramientas mediante atributos
-- **JSON-RPC 2.0:** Protocolo de comunicación estándar
-- **CORS:** Habilitado para permitir conexiones desde Claude Code
+- **Platform:** Windows (debug capture requires Windows APIs)
+- **Privileges:** No admin rights needed for debug capture - uses session-local objects
+- **Conflict Detection:** Automatically detects and reports if DebugView or other debuggers are running
+- **Encoding:** UTF-8 for new files
+- **Protocol:** MCP over JSON-RPC 2.0
+- **RTTI:** Automatic tool discovery via attributes
+- **Thread-safe:** Debug capture in separate thread with full synchronization
+- **CORS:** Configurable for development
 
 ---
-Última actualización: 2025-09-03
-CyberMAX MCP Server v1.0.0
+Last updated: 2025-09-17
+MCP Server v2.0.0
