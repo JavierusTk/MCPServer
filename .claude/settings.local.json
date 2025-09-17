@@ -9,7 +9,10 @@
       "Bash(compilar MCPServerCore)",
       "Bash(compilar MCPServerDesign)",
       "Bash(compilar MCPServerDesign.VCL)",
-      "Bash(compilar MCPServerDesign.FMX)"
+      "Bash(compilar MCPServerDesign.FMX)",
+      "Read(//mnt/w/Delphi-MCP-Server/**)",
+      "Bash(compilar CyberMaxHelloMCP)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

@@ -149,6 +149,17 @@
         <DCCReference Include="W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Server.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Managers\MCPServer.CoreManager.pas"/>
         <DCCReference Include="W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.HelloCyberMax.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.CyberEcho.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.CyberTime.pas"/>
+        <DCCReference Include="Tools\MCPServer.DebugCapture.Types.pas"/>
+        <DCCReference Include="Tools\MCPServer.DebugCapture.Core.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.StartDebugCapture.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.StopDebugCapture.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.GetDebugMessages.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.GetProcessSummary.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.GetCaptureStatus.pas"/>
+        <DCCReference Include="Tools\MCPServer.Tool.PauseResumeCapture.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
             <DependentOn>W:\Delphi Current Version.optset</DependentOn>

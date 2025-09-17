@@ -16,7 +16,18 @@ uses
   MCPServer.ResourcesManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ResourcesManager.pas',
   MCPServer.Resource.Server in 'W:\Delphi-MCP-Server\src\Resources\MCPServer.Resource.Server.pas',
   MCPServer.CoreManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.CoreManager.pas',
-  MCPServer.ToolsManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas';
+  MCPServer.ToolsManager in 'W:\Delphi-MCP-Server\src\Managers\MCPServer.ToolsManager.pas',
+  MCPServer.Tool.HelloCyberMax in 'Tools\MCPServer.Tool.HelloCyberMax.pas',
+  MCPServer.Tool.CyberEcho in 'Tools\MCPServer.Tool.CyberEcho.pas',
+  MCPServer.Tool.CyberTime in 'Tools\MCPServer.Tool.CyberTime.pas',
+  MCPServer.DebugCapture.Types in 'Tools\MCPServer.DebugCapture.Types.pas',
+  MCPServer.DebugCapture.Core in 'Tools\MCPServer.DebugCapture.Core.pas',
+  MCPServer.Tool.StartDebugCapture in 'Tools\MCPServer.Tool.StartDebugCapture.pas',
+  MCPServer.Tool.StopDebugCapture in 'Tools\MCPServer.Tool.StopDebugCapture.pas',
+  MCPServer.Tool.GetDebugMessages in 'Tools\MCPServer.Tool.GetDebugMessages.pas',
+  MCPServer.Tool.GetProcessSummary in 'Tools\MCPServer.Tool.GetProcessSummary.pas',
+  MCPServer.Tool.GetCaptureStatus in 'Tools\MCPServer.Tool.GetCaptureStatus.pas',
+  MCPServer.Tool.PauseResumeCapture in 'Tools\MCPServer.Tool.PauseResumeCapture.pas';
 
 var
   Server: TMCPIdHTTPServer;
@@ -50,6 +61,7 @@ procedure RunServer;
 begin
   // Load settings
   Settings := TMCPSettings.Create;
+  Settings.Port:=3001;
   
   WriteLn('========================================');
   WriteLn(' CyberMAX MCP Server - Hello World v1.0');
@@ -84,9 +96,18 @@ begin
     WriteLn('Server started successfully!');
     WriteLn('');
     WriteLn('Available tools:');
-    WriteLn('  - hello_cybermax : Get greeting and CyberMAX info');
-    WriteLn('  - cyber_echo     : Echo back your message');
-    WriteLn('  - cyber_time     : Get current system time');
+    WriteLn('  Basic Tools:');
+    WriteLn('    - hello_cybermax        : Get greeting and CyberMAX info');
+    WriteLn('    - cyber_echo           : Echo back your message');
+    WriteLn('    - cyber_time           : Get current system time');
+    WriteLn('');
+    WriteLn('  Debug Capture Tools:');
+    WriteLn('    - start_debug_capture  : Start capturing OutputDebugString');
+    WriteLn('    - stop_debug_capture   : Stop capture session');
+    WriteLn('    - get_debug_messages   : Retrieve captured messages');
+    WriteLn('    - get_process_summary  : Get process statistics');
+    WriteLn('    - get_capture_status   : Get session information');
+    WriteLn('    - pause_resume_capture : Pause/resume capture');
     WriteLn('');
     WriteLn('Press CTRL+C to stop...');
     WriteLn('========================================');
