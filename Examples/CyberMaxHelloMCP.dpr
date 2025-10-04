@@ -27,7 +27,9 @@ uses
   MCPServer.Tool.GetDebugMessages in 'Tools\MCPServer.Tool.GetDebugMessages.pas',
   MCPServer.Tool.GetProcessSummary in 'Tools\MCPServer.Tool.GetProcessSummary.pas',
   MCPServer.Tool.GetCaptureStatus in 'Tools\MCPServer.Tool.GetCaptureStatus.pas',
-  MCPServer.Tool.PauseResumeCapture in 'Tools\MCPServer.Tool.PauseResumeCapture.pas';
+  MCPServer.Tool.PauseResumeCapture in 'Tools\MCPServer.Tool.PauseResumeCapture.pas',
+  MCPServer.CyberMAX.PipeClient in 'Tools\MCPServer.CyberMAX.PipeClient.pas',
+  MCPServer.CyberMAX.DynamicProxy in 'Tools\MCPServer.CyberMAX.DynamicProxy.pas';
 
 var
   Server: TMCPIdHTTPServer;
@@ -82,14 +84,22 @@ begin
   ManagerRegistry.RegisterManager(CoreManager);
   ManagerRegistry.RegisterManager(ToolsManager);
   ManagerRegistry.RegisterManager(ResourcesManager);
-  
+
+  // Discover and register CyberMAX tools dynamically
+  TLogger.Info('Discovering CyberMAX tools...');
+  var CyberMAXToolCount := RegisterAllCyberMAXTools;
+  if CyberMAXToolCount > 0 then
+    TLogger.Info('Registered ' + CyberMAXToolCount.ToString + ' CyberMAX tools')
+  else
+    TLogger.Warning('No CyberMAX tools registered (CyberMAX may not be running)');
+
   // Create and configure server
   Server := TMCPIdHTTPServer.Create(nil);
   try
     Server.Settings := Settings;
     Server.ManagerRegistry := ManagerRegistry;
     Server.CoreManager := CoreManager;
-    
+
     // Start server
     Server.Start;
     
@@ -108,6 +118,18 @@ begin
     WriteLn('    - get_process_summary  : Get process statistics');
     WriteLn('    - get_capture_status   : Get session information');
     WriteLn('    - pause_resume_capture : Pause/resume capture');
+    WriteLn('');
+    if CyberMAXToolCount > 0 then
+    begin
+      WriteLn('  CyberMAX Tools: ' + CyberMAXToolCount.ToString + ' tools discovered and registered');
+      WriteLn('    (All CyberMAX tools are dynamically discovered from running instance)');
+      WriteLn('    Use MCP tools/list endpoint or list-tools to see all available tools');
+    end
+    else
+    begin
+      WriteLn('  CyberMAX Tools: Not available');
+      WriteLn('    Start CyberMAX.exe (RELEASE build) and restart this server to enable');
+    end;
     WriteLn('');
     WriteLn('Press CTRL+C to stop...');
     WriteLn('========================================');
