@@ -32,10 +32,13 @@ type
   TCyberMAXDynamicTool = class(TMCPToolBase<TJSONObject>)
   private
     FCyberMAXToolName: string;
+    FInputSchema: TJSONObject;  // Schema from CyberMAX (owned)
   protected
     function ExecuteWithParams(const Params: TJSONObject): string; override;
   public
-    constructor Create(const AToolName, ADescription: string); reintroduce;
+    constructor Create(const AToolName, ADescription: string; ASchema: TJSONObject = nil); reintroduce;
+    destructor Destroy; override;
+    function GetInputSchema: TJSONObject; reintroduce;
   end;
 
 /// <summary>
@@ -60,13 +63,33 @@ var
 
 { TCyberMAXDynamicTool }
 
-constructor TCyberMAXDynamicTool.Create(const AToolName, ADescription: string);
+constructor TCyberMAXDynamicTool.Create(const AToolName, ADescription: string; ASchema: TJSONObject = nil);
 begin
   inherited Create;
   FCyberMAXToolName := AToolName;
   FName := AToolName;
   FDescription := ADescription;
-  TLogger.Info('TCyberMAXDynamicTool.Create: Name="' + FName + '", CyberMAXName="' + FCyberMAXToolName + '"');
+  FInputSchema := ASchema;  // Store schema (takes ownership if provided)
+  TLogger.Info('TCyberMAXDynamicTool.Create: Name="' + FName + '", CyberMAXName="' + FCyberMAXToolName + '", HasSchema=' + BoolToStr(Assigned(FInputSchema), True));
+end;
+
+destructor TCyberMAXDynamicTool.Destroy;
+begin
+  // Free the schema if we own it
+  if Assigned(FInputSchema) then
+    FInputSchema.Free;
+  inherited;
+end;
+
+function TCyberMAXDynamicTool.GetInputSchema: TJSONObject;
+begin
+  // If we have a schema from CyberMAX, return a clone
+  // (caller expects to own the returned object)
+  if Assigned(FInputSchema) then
+    Result := TJSONObject(FInputSchema.Clone)
+  else
+    // Fall back to parent's auto-generated schema (for TJSONObject)
+    Result := inherited GetInputSchema;
 end;
 
 function TCyberMAXDynamicTool.ExecuteWithParams(const Params: TJSONObject): string;
@@ -117,6 +140,8 @@ var
   I: Integer;
   ToolObj: TJSONObject;
   ToolName, ToolDescription, Category, Module: string;
+  SchemaObj: TJSONObject;
+  SchemaClone: TJSONObject;
 begin
   Result := 0;
   CyberMAXToolCount := 0;
@@ -179,20 +204,31 @@ begin
       Category := ToolObj.GetValue<string>('category', 'general');
       Module := ToolObj.GetValue<string>('module', 'core');
 
+      // Extract schema if present (clone it to preserve original)
+      SchemaClone := nil;
+      if ToolObj.TryGetValue<TJSONObject>('schema', SchemaObj) then
+      begin
+        if Assigned(SchemaObj) then
+          SchemaClone := TJSONObject(SchemaObj.Clone);
+      end;
+
       // Register the tool dynamically
       // IMPORTANT: Use intermediate function to properly capture by value
       try
         TMCPRegistry.RegisterTool(ToolName,
-          (function(const AName, ADesc: string): TMCPToolFactory
+          (function(const AName, ADesc: string; ASchema: TJSONObject): TMCPToolFactory
           begin
             Result := function: IMCPTool
             begin
-              Result := TCyberMAXDynamicTool.Create(AName, ADesc);
+              Result := TCyberMAXDynamicTool.Create(AName, ADesc, ASchema);
             end;
-          end)(ToolName, ToolDescription)  // Immediate invocation with current values
+          end)(ToolName, ToolDescription, SchemaClone)  // Immediate invocation with current values
         );
 
-        TLogger.Info('  Registered: ' + ToolName + ' (' + Category + ', ' + Module + ')');
+        if Assigned(SchemaClone) then
+          TLogger.Info('  Registered: ' + ToolName + ' (' + Category + ', ' + Module + ') [with schema]')
+        else
+          TLogger.Info('  Registered: ' + ToolName + ' (' + Category + ', ' + Module + ')');
         Inc(Result);
 
       except
