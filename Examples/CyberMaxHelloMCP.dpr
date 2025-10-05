@@ -73,21 +73,21 @@ begin
   
   TLogger.Info('Starting CyberMAX MCP Server...');
   TLogger.Info('Listening on port ' + Settings.Port.ToString);
-  
-  // Create managers
+
+  // Discover and register CyberMAX tools dynamically BEFORE creating ToolsManager
+  TLogger.Info('Discovering CyberMAX tools...');
+  var CyberMAXToolCount := RegisterAllCyberMAXTools;
+
+  // Create managers (ToolsManager will pick up the dynamically registered tools)
   ManagerRegistry := TMCPManagerRegistry.Create;
   CoreManager := TMCPCoreManager.Create(Settings);
   ToolsManager := TMCPToolsManager.Create;
   ResourcesManager := TMCPResourcesManager.Create;
-  
+
   // Register managers
   ManagerRegistry.RegisterManager(CoreManager);
   ManagerRegistry.RegisterManager(ToolsManager);
   ManagerRegistry.RegisterManager(ResourcesManager);
-
-  // Discover and register CyberMAX tools dynamically
-  TLogger.Info('Discovering CyberMAX tools...');
-  var CyberMAXToolCount := RegisterAllCyberMAXTools;
   if CyberMAXToolCount > 0 then
     TLogger.Info('Registered ' + CyberMAXToolCount.ToString + ' CyberMAX tools')
   else

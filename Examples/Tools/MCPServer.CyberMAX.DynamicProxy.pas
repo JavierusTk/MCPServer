@@ -66,6 +66,7 @@ begin
   FCyberMAXToolName := AToolName;
   FName := AToolName;
   FDescription := ADescription;
+  TLogger.Info('TCyberMAXDynamicTool.Create: Name="' + FName + '", CyberMAXName="' + FCyberMAXToolName + '"');
 end;
 
 function TCyberMAXDynamicTool.ExecuteWithParams(const Params: TJSONObject): string;
@@ -179,12 +180,16 @@ begin
       Module := ToolObj.GetValue<string>('module', 'core');
 
       // Register the tool dynamically
+      // IMPORTANT: Use intermediate function to properly capture by value
       try
         TMCPRegistry.RegisterTool(ToolName,
-          function: IMCPTool
+          (function(const AName, ADesc: string): TMCPToolFactory
           begin
-            Result := TCyberMAXDynamicTool.Create(ToolName, ToolDescription);
-          end
+            Result := function: IMCPTool
+            begin
+              Result := TCyberMAXDynamicTool.Create(AName, ADesc);
+            end;
+          end)(ToolName, ToolDescription)  // Immediate invocation with current values
         );
 
         TLogger.Info('  Registered: ' + ToolName + ' (' + Category + ', ' + Module + ')');

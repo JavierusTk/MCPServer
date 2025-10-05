@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/w/CyberMAX/mcp/**)",
+      "Read(//mnt/w/**)",
+      "Bash(curl -X POST http://192.168.0.89:3001/mcp -H \"Content-Type: application/json\" -d '{\"\"\"\"jsonrpc\"\"\"\":\"\"\"\"2.0\"\"\"\",\"\"\"\"id\"\"\"\":1,\"\"\"\"method\"\"\"\":\"\"\"\"tools/list\"\"\"\"}')",
+      "Bash(python3:*)",
+      "Bash(tasklist.exe)",
+      "Bash(taskkill.exe:*)",
+      "Bash(./CyberMaxHelloMCP.exe)",
+      "Bash(compilar /mnt/w/MCPserver/MCPServerCore.dpk)",
+      "Bash(compilar /mnt/w/MCPserver/Examples/CyberMaxHelloMCP.dproj)",
+      "mcp__cybermax-hello__hello_cybermax",
+      "mcp__cybermax-hello__cyber_echo",
+      "mcp__cybermax-hello__cyber_time",
+      "mcp__cybermax-hello__get-application-state",
+      "mcp__cybermax-hello__get-execution-state",
+      "mcp__cybermax-hello__list-open-forms",
+      "mcp__cybermax-hello__list-tools",
+      "mcp__cybermax-hello__list-commands",
+      "mcp__cybermax-hello__list-internals",
+      "mcp__cybermax-hello__get-form-info",
+      "mcp__cybermax-hello__ui_focus_get",
+      "mcp__cybermax-hello__ui_get_tree_diff",
+      "mcp__cybermax-hello__take-screenshot",
+      "mcp__cybermax-hello__echo",
+      "mcp__cybermax-hello__start_debug_capture",
+      "mcp__cybermax-hello__get_debug_messages",
+      "mcp__cybermax-hello__get_capture_status",
+      "mcp__cybermax-hello__stop_debug_capture",
+      "Bash(compilar:*)",
+      "Bash(curl -v -X POST http://192.168.0.89:3001/mcp -H \"Content-Type: application/json\" -d '{\"\"\"\"jsonrpc\"\"\"\":\"\"\"\"2.0\"\"\"\",\"\"\"\"id\"\"\"\":0,\"\"\"\"method\"\"\"\":\"\"\"\"initialize\"\"\"\",\"\"\"\"params\"\"\"\":{\"\"\"\"protocolVersion\"\"\"\":\"\"\"\"2025-06-18\"\"\"\",\"\"\"\"capabilities\"\"\"\":{\"\"\"\"roots\"\"\"\":{}},\"\"\"\"clientInfo\"\"\"\":{\"\"\"\"name\"\"\"\":\"\"\"\"claude-code\"\"\"\",\"\"\"\"version\"\"\"\":\"\"\"\"2.0.8\"\"\"\"}}}')"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
