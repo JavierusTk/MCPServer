@@ -29,7 +29,10 @@
       "mcp__cybermax-hello__get_capture_status",
       "mcp__cybermax-hello__stop_debug_capture",
       "Bash(compilar:*)",
-      "Bash(curl -v -X POST http://192.168.0.89:3001/mcp -H \"Content-Type: application/json\" -d '{\"\"\"\"jsonrpc\"\"\"\":\"\"\"\"2.0\"\"\"\",\"\"\"\"id\"\"\"\":0,\"\"\"\"method\"\"\"\":\"\"\"\"initialize\"\"\"\",\"\"\"\"params\"\"\"\":{\"\"\"\"protocolVersion\"\"\"\":\"\"\"\"2025-06-18\"\"\"\",\"\"\"\"capabilities\"\"\"\":{\"\"\"\"roots\"\"\"\":{}},\"\"\"\"clientInfo\"\"\"\":{\"\"\"\"name\"\"\"\":\"\"\"\"claude-code\"\"\"\",\"\"\"\"version\"\"\"\":\"\"\"\"2.0.8\"\"\"\"}}}')"
+      "Bash(curl -v -X POST http://192.168.0.89:3001/mcp -H \"Content-Type: application/json\" -d '{\"\"\"\"jsonrpc\"\"\"\":\"\"\"\"2.0\"\"\"\",\"\"\"\"id\"\"\"\":0,\"\"\"\"method\"\"\"\":\"\"\"\"initialize\"\"\"\",\"\"\"\"params\"\"\"\":{\"\"\"\"protocolVersion\"\"\"\":\"\"\"\"2025-06-18\"\"\"\",\"\"\"\"capabilities\"\"\"\":{\"\"\"\"roots\"\"\"\":{}},\"\"\"\"clientInfo\"\"\"\":{\"\"\"\"name\"\"\"\":\"\"\"\"claude-code\"\"\"\",\"\"\"\"version\"\"\"\":\"\"\"\"2.0.8\"\"\"\"}}}')",
+      "Bash(curl -X POST http://192.168.0.89:3001/mcp -H \"Content-Type: application/json\" -d '{\"\"\"\"jsonrpc\"\"\"\":\"\"\"\"2.0\"\"\"\",\"\"\"\"id\"\"\"\":999,\"\"\"\"method\"\"\"\":\"\"\"\"tools/list\"\"\"\"}')",
+      "Read(//tmp/**)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
